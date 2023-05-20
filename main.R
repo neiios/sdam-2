@@ -9,30 +9,28 @@ PR <- mapply(anyNA, wine)
 PR
 
 boxplot(wine)
+boxplot(subset(wine, select = -c(free_sulfur_dioxide, total_sulfur_dioxide)))
 
 outliers <- boxplot.stats(wine$total_sulfur_dioxide)$out
 wine <- wine[-which(wine$total_sulfur_dioxide %in% outliers),]
-boxplot(wine)
 
 outliers <- boxplot.stats(wine$free_sulfur_dioxide)$out
 wine <- wine[-which(wine$free_sulfur_dioxide %in% outliers),]
-boxplot(wine)
 
 outliers <- boxplot.stats(wine$residual_sugar)$out
 wine <- wine[-which(wine$residual_sugar %in% outliers),]
-boxplot(wine)
 
 outliers <- boxplot.stats(wine$fixed_acidity)$out
 wine <- wine[-which(wine$fixed_acidity %in% outliers),]
-boxplot(wine)
-
-outliers <- boxplot.stats(wine$quality)$out
-wine <- wine[-which(wine$quality %in% outliers),]
-boxplot(wine)
 
 outliers <- boxplot.stats(wine$total_sulfur_dioxide)$out
 wine <- wine[-which(wine$total_sulfur_dioxide %in% outliers),]
-boxplot(wine)
+
+outliers <- boxplot.stats(wine$chlorides)$out
+wine <- wine[-which(wine$chlorides %in% outliers),]
+
+outliers <- boxplot.stats(wine$sulphates)$out
+wine <- wine[-which(wine$sulphates %in% outliers),]
 
 # Aprašomoji statistika
 summary(wine)
@@ -47,7 +45,7 @@ library(Hmisc)
 rcorr(as.matrix(wine))
 
 attach(wine)
-model <- lm(quality~chlorides+sulphates
+model <- lm(quality~sulphates
             +citric_acid+alcohol
             +volatile_acidity + pH)
 

@@ -32,6 +32,9 @@ wine <- wine[-which(wine$chlorides %in% outliers),]
 outliers <- boxplot.stats(wine$sulphates)$out
 wine <- wine[-which(wine$sulphates %in% outliers),]
 
+boxplot(wine)
+boxplot(subset(wine, select = -c(free_sulfur_dioxide, total_sulfur_dioxide)))
+
 # Aprašomoji statistika
 summary(wine)
 
@@ -47,16 +50,15 @@ rcorr(as.matrix(wine))
 attach(wine)
 model <- lm(quality~sulphates
             +citric_acid+alcohol
-            +volatile_acidity + pH)
+            +volatile_acidity+pH)
 
 summary(model)
-
 confint(model)
 
 # Prielaidų analizė
 library(QuantPsyc)
 library(lmtest)
-plot(model)
+# plot(model)
 
 # 1. Ar liekamosios paklaidos homoskedastiškos?
 plot(model, which=3)
@@ -74,10 +76,11 @@ outlierTest(model)
 # 4. Ar regresoriai nėra multikolinearūs?
 vif(model)
 
-# 5. Prognozė
-prognoze <- predict(model, data.frame("chlorides"=0.070, "sulphates"=0.5, 
-                                      "citric_acid"=0, "alcohol"=10, 
-                                      "volatile_acidity"=0.7, "pH"=3.5))
-prognoze
+# Prognozė
+for (t in list(433, 10, 420, 1000)) {
+  temp <- wine[t,]
+  glimpse(temp)
+  pre <- predict(model, temp, level=.95, interval="confidence")
+  print(pre)
+}
 
-plot(prognoze)
